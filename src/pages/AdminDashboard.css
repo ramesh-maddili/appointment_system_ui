@@ -1,0 +1,45 @@
+/* src/pages/AdminDashboard.css */
+.admin-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.admin-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-form input {
+  padding: 0.5rem;
+  flex: 1;
+}
+
+.admin-form button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.delete-btn {
+  background-color: crimson;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}

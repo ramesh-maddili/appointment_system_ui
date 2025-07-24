@@ -1,0 +1,67 @@
+/* src/pages/DoctorDashboard.css */
+.doctor-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+}
+.doctor-profile {
+  background-color: #f1f1f1;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+
+.slot-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.slot-form input {
+  padding: 0.5rem;
+  flex: 1;
+}
+
+.slot-form button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+}
+
+.slot-list {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.slot-list li {
+  padding: 0.6rem;
+  background: #f2f2f2;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slot-list button {
+  background-color: crimson;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}

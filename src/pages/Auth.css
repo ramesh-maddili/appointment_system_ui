@@ -1,0 +1,64 @@
+<!-- src/pages/Auth.css-->
+/* Auth.css */  
+.form-container {
+  width: 300px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #ccc;
+  background: #fff;
+}
+
+.form-container input, .form-container select {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-container button {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.dashboard {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.dashboard input[type="datetime-local"],
+.dashboard input,
+.dashboard button {
+  margin: 8px;
+  padding: 8px;
+}
+
+.dashboard ul {
+  list-style: none;
+  padding: 0;
+}
+
+.dashboard li {
+  margin: 5px 0;
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.dashboard h4 {
+  margin-top: 20px;
+}
