@@ -4,6 +4,7 @@ import api from '../services/api';
 import './PatientDashboard.css';
 import LogoutButton from '../components/LogoutButton';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const PatientDashboard = () => {
   const [doctors, setDoctors] = useState([]);
@@ -12,6 +13,7 @@ const PatientDashboard = () => {
   const [myAppointments, setMyAppointments] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [patientProfile, setPatientProfile] = useState(null);
+  //const [appointments, setAppointments] = useState([]);
 
 const fetchPatientProfile = async () => {
   try {
@@ -21,6 +23,25 @@ const fetchPatientProfile = async () => {
     console.error('Error fetching patient profile:', err.response?.data || err.message);
   }
 };
+// Fetch appointments for the patient
+const token = localStorage.getItem('token');
+
+  
+  const cancelAppointment = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/patients/appointments/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      alert('Appointment cancelled successfully');
+      
+    } catch (err) {
+      console.error('Cancel appointment error:', err);
+      alert('Failed to cancel appointment');
+    }
+  };
+
   // Fetch list of all doctors
   const fetchDoctors = async () => {
     try {
@@ -78,6 +99,7 @@ const fetchPatientProfile = async () => {
     fetchDoctors();
     fetchMyAppointments();
     fetchPatientProfile();
+    
   }, []);
 
   return (
@@ -157,16 +179,24 @@ const fetchPatientProfile = async () => {
             </tr>
           </thead>
           <tbody>
-  {myAppointments
-    .filter((appt) => appt.slot && appt.slot.datetime) //  filter out null slots
-    .sort((a, b) => new Date(a.slot.datetime) - new Date(b.slot.datetime))
-    .map((appt) => (
-      <tr key={appt._id}>
-        <td>{appt.doctor?.name || 'N/A'}</td>
-        <td>{new Date(appt.slot.datetime).toLocaleString()}</td>
-      </tr>
-    ))}
-</tbody>
+    {myAppointments
+      .filter((appt) => appt.slot && appt.slot.datetime)
+      .sort((a, b) => new Date(a.slot.datetime) - new Date(b.slot.datetime))
+      .map((appt) => (
+        <tr key={appt._id}>
+          <td>{appt.doctor?.name || 'N/A'}</td>
+          <td>{new Date(appt.slot.datetime).toLocaleString()}</td>
+          <td>
+            <button
+              onClick={() => cancelAppointment(appt._id)}
+              className="cancel-btn"
+            >
+              Cancel
+            </button>
+          </td>
+        </tr>
+      ))}
+  </tbody>
 
         </table>
       )}
