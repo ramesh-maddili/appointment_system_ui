@@ -5,6 +5,7 @@ import './PatientDashboard.css';
 import LogoutButton from '../components/LogoutButton';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import eventBus from '../utils/eventBus';
 
 const PatientDashboard = () => {
   const [doctors, setDoctors] = useState([]);
@@ -34,11 +35,13 @@ const token = localStorage.getItem('token');
           Authorization: `Bearer ${token}`
         }
       });
-      alert('Appointment cancelled successfully');
-      
+      toast.success('Appointment cancelled successfully');
+      fetchMyAppointments();
+      // Notify doctor dashboard
+      eventBus.dispatch('appointment-updated');
     } catch (err) {
       console.error('Cancel appointment error:', err);
-      alert('Failed to cancel appointment');
+      toast.error('Failed to cancel appointment');
     }
   };
 
@@ -82,18 +85,24 @@ const token = localStorage.getItem('token');
     }
   };
 
-  // Handle booking a slot
-  const handleBook = async (slotId) => {
+  // Handle bookAppointment 
+  const bookAppointment  = async (slotId) => {
     try {
-      await api.post('/appointments', { slotId });
-      toast.success('Appointment booked successfully!');
-      fetchSlots(selectedDoctorId);
-      fetchMyAppointments();
-    } catch (err) {
-      toast.error('Booking failed');
-      console.error(err);
-    }
-  };
+    await axios.post('http://localhost:5000/api/appointments', { slotId }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    toast.success('Appointment booked successfully');
+
+    // Refresh slots after booking to disable the button
+    await fetchSlots(selectedDoctorId);
+    await fetchMyAppointments();        // Refresh buttons
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Booking failed');
+    console.error('Booking error:', err);
+  }
+};
 
   useEffect(() => {
     fetchDoctors();
@@ -140,31 +149,39 @@ const token = localStorage.getItem('token');
       </div>
 
       {/* Available Slots */}
-      {selectedDoctorId && (
-        <>
-          <h3>Available Slots</h3>
-          {loadingSlots ? (
-            <p>Loading slots...</p>
-          ) : availableSlots.length === 0 ? (
-            <p>No available slots for this doctor.</p>
-          ) : (
-            <ul className="slot-list">
-              {availableSlots.map((slot) => (
-                <li key={slot._id} className="slot-item">
-                  <span>{new Date(slot.datetime).toLocaleString()}</span>
-                  <button
-                    onClick={() => handleBook(slot._id)}
-                    disabled={slot.isBooked}
-                    className={slot.isBooked ? 'booked' : ''}
-                  >
-                    {slot.isBooked ? 'Booked' : 'Book'}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </>
-      )}
+{selectedDoctorId && (
+  <>
+    <h3>Your Available Slots</h3>
+    {loadingSlots ? (
+      <p>Loading slots...</p>
+    ) : availableSlots.length === 0 ? (
+      <p>No available slots for this doctor.</p>
+    ) : (
+      <ul className="slot-list">
+        {availableSlots.map((slot) => {
+          const isBooked = myAppointments.some(
+            (appt) => appt.slot?._id === slot._id
+          );
+
+          return (
+            <li key={slot._id}>
+              {new Date(slot.datetime).toLocaleString()}
+              {isBooked ? (
+                <button disabled style={{ marginLeft: '10px', backgroundColor: '#ccc' }}>
+                  Booked
+                </button>
+              ) : (
+                <button onClick={() => bookAppointment(slot._id)} style={{ marginLeft: '10px' }}>
+                  Book
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </>
+)}
 
       {/* Appointment History */}
       <h3>My Appointments</h3>

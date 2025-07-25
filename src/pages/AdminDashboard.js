@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import './AdminDashboard.css'; // Custom styling
 import LogoutButton from '../components/LogoutButton';
+import { toast } from 'react-toastify';
 
 
 const AdminDashboard = () => {
@@ -14,7 +15,7 @@ const AdminDashboard = () => {
       const res = await api.get('/doctors');
       setDoctors(res.data);
     } catch (error) {
-      console.error('Error fetching doctors:', error);
+      toast.error('Error fetching doctors:', error);
     }
   };
 
@@ -23,6 +24,7 @@ const AdminDashboard = () => {
     try {
       await api.post('/doctors', form);
       setForm({ name: '', email: '', specialization: '' });
+      toast.success('Doctor added successfully');
       fetchDoctors();
     } catch (err) {
       alert(err.response?.data?.message || 'Error adding doctor');
@@ -32,6 +34,7 @@ const AdminDashboard = () => {
   const deleteDoctor = async (id) => {
     try {
       await api.delete(`/doctors/${id}`);
+      toast.success('Doctor deleted successfully');
       fetchDoctors();
     } catch (err) {
       alert('Error deleting doctor');

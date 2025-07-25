@@ -4,6 +4,7 @@ import api from '../services/api';
 import './DoctorDashboard.css';
 import LogoutButton from '../components/LogoutButton';
 import { toast } from 'react-toastify';
+import eventBus from '../utils/eventBus';
 
 const DoctorDashboard = () => {
   const [doctorProfile, setDoctorProfile] = useState(null);
@@ -48,6 +49,7 @@ const DoctorDashboard = () => {
 
     try {
       await api.post('/slots', { datetime: newSlot });
+      toast.success('Slot added successfully');
       setNewSlot('');
       fetchSlots();
     } catch (err) {
@@ -71,6 +73,12 @@ const DoctorDashboard = () => {
     fetchDoctorProfile();
     fetchSlots();
     fetchAppointments();
+    const unsubscribe = eventBus.subscribe('appointment-updated', fetchAppointments);
+    const interval = setInterval(fetchAppointments, 10000); // 10 seconds
+  return () => {
+    clearInterval(interval);
+    unsubscribe(); // cleanup listener
+  };
   }, []);
 
   return (
